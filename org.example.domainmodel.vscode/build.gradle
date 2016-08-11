@@ -20,8 +20,8 @@ dependencies {
 }
 
 node {
-    version = '6.2.2'
-    npmVersion = '3.10.6'
+    version = '6.3.1'
+    npmVersion = '3.10.5'
     download = true
     workDir = file("${project.buildDir}/nodejs")
     nodeModulesDir = file("${project.projectDir}")
@@ -48,25 +48,34 @@ clean.doFirst {
     delete tasks.ioShadowJar.archivePath
 }
 
-task npmInstallVsce(type: NpmTask, dependsOn: npmSetup) {
-	group 'Node'
-	description 'Installs the NodeJS package "Visual Studio Code Extension Manager"'
-	args = [ 'install', 'vsce' ]
-}
-
 npmInstall.dependsOn 'shadowJars'
 
 def vsce = file("$node.nodeModulesDir.path/node_modules/vsce/out/vsce")
 
-task vscodeExtension(type: Exec, dependsOn: [nodeSetup,npmInstall, npmInstallVsce]) {
+task npmInstallNpm(type: NpmTask, dependsOn: npmSetup) {
+    group 'Node'
+    description 'Installs NPM"'
+    args = [ 'install', '-g', 'npm' ]
+}
+
+task vscodeExtension(type: NodeTask, dependsOn: [nodeSetup,npmInstall,npmInstallNpm,shadowJars]) {
     ext.destDir = new File(buildDir, 'vscode')
     ext.archiveName = "domainmodel-${project.version}.vsix"
     ext.destPath = "$destDir/$archiveName"
+    print projectDir
+    script = vsce
+    args = ['package', '--out', destPath]
+    execOverrides {
+     //it.workingDir 
 
-    workingDir projectDir
+    }
+   
+   // nodeModulesDir = projectDir
+	//version = '6.3.1'
+	//npmVersion = '3.10.5'
     doFirst {
         destDir.mkdirs()
-        commandLine nodeSetup.variant.nodeExec, vsce, 'package', '--out', destPath
+        //commandLine nodeSetup.variant.nodeExec, vsce, 'package', '--out', destPath
 		//commandLine 'cmd.exe','/k','xxx.bat'
     }
 }
@@ -75,8 +84,11 @@ plugins.withType(com.moowork.gradle.node.NodePlugin) {
 	node {
 		workDir = file("$project.buildDir/nodejs")
 		nodeModulesDir = projectDir
+		version = '6.3.1'
+    	npmVersion = '3.10.5'
 	}
 }
+
 
 task installExtension(type: Exec, dependsOn: vscodeExtension) {
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {

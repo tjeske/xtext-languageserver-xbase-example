@@ -62,10 +62,6 @@ public class XbaseProjectManager extends ProjectManager {
 		classpathURIContext = new URLClassLoader(urls.toArray(new URL[urls.size()]), null);
 	}
 	
-	public static void main(String[] args) {
-		
-	}
-	
 	@Override
 	protected XtextResourceSet createFreshResourceSet(ResourceDescriptionsData newIndex) {
 		// TODO Auto-generated method stub

@@ -1,5 +1,6 @@
 package org.example.domainmodel.ide;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import org.apache.log4j.chainsaw.Main;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.build.IncrementalBuilder.Result;
 import org.eclipse.xtext.ide.server.ProjectManager;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.resource.IExternalContentSupport.IExternalContentProvider;
@@ -24,6 +26,7 @@ import org.eclipse.xtext.workspace.IProjectConfig;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -68,6 +71,18 @@ public class XbaseProjectManager extends ProjectManager {
 		XtextResourceSet resourceSet = super.createFreshResourceSet(newIndex);
 		resourceSet.setClasspathURIContext(classpathURIContext);
 		return resourceSet;
+	}
+	
+	@Override
+	public Result doBuild(List<URI> dirtyFiles, List<URI> deletedFiles, CancelIndicator cancelIndicator) {
+		// workaround for https://github.com/eclipse/xtext-core/issues/73
+		for (URI f : Lists.newArrayList(dirtyFiles)) {
+			if (!new File(f.toFileString()).exists()) {
+				dirtyFiles.remove(f);
+				deletedFiles.add(f);
+			}
+		}
+		return super.doBuild(dirtyFiles, deletedFiles, cancelIndicator);
 	}
 
 }

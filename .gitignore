@@ -11,3 +11,4 @@ model
 .settings
 .vscode
 .gradle
+*.log

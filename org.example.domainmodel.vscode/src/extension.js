@@ -11,10 +11,25 @@ var path = require('path');
 var vscode_lc = require('vscode-languageclient');
 var spawn = require('child_process').spawn;
 function activate(context) {
+    // var serverOptions = {
+    //     port: 5007
+    // };
+    // var serverInfo = function () {
+    //     // Connect to the language server via a socket channel
+    //     var socket = net.connect(serverOptions);
+    //     var result = {
+    //         writer: socket,
+    //         reader: socket
+    //     };
+    //     return Promise.resolve(result);
+    // };
     var serverInfo = function () {
         // Connect to the language server via a io channel
         var jar = context.asAbsolutePath(path.join('src', 'domainmodel-uber.jar'));
-        var child = spawn('java', ['-Xdebug','-Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n,quiet=y', '-jar', jar]);
+        var childOptions = {
+            cwd : context.asAbsolutePath(path.join('src'))
+        };
+        var child = spawn('java', ['-Xdebug','-Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n,quiet=y', '-jar', jar, "debug"], childOptions);
         child.stdout.on('data', function (chunk) {
             console.log(chunk.toString());
         });

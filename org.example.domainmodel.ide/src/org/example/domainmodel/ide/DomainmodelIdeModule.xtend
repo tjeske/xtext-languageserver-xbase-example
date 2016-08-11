@@ -3,9 +3,15 @@
  */
 package org.example.domainmodel.ide
 
+import org.eclipse.xtext.xbase.typesystem.internal.IFeatureScopeTracker
+import org.eclipse.xtext.xbase.typesystem.internal.OptimizingFeatureScopeTrackerProvider
 
 /**
  * Use this class to register ide components.
  */
 class DomainmodelIdeModule extends AbstractDomainmodelIdeModule {
+	
+	def Class<? extends IFeatureScopeTracker.Provider> bindIFeatureScopeTracker$Provider() {
+		OptimizingFeatureScopeTrackerProvider
+	}
 }

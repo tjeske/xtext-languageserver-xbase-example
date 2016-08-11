@@ -1,19 +1,22 @@
 package org.example.domainmodel.ide
 
 import com.google.inject.Guice
-import io.typefox.lsapi.services.json.LanguageServerToJsonAdapter
-import io.typefox.lsapi.services.json.LoggingJsonAdapter
+import io.typefox.lsapi.services.json.MessageJsonHandler
+import io.typefox.lsapi.services.json.StreamMessageReader
+import io.typefox.lsapi.services.json.StreamMessageWriter
+import io.typefox.lsapi.services.transport.io.ConcurrentMessageReader
+import io.typefox.lsapi.services.transport.server.LanguageServerEndpoint
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.PrintStream
-import java.io.PrintWriter
-import java.sql.Timestamp;
+import java.sql.Timestamp
+import java.util.concurrent.Executors
 import javax.inject.Inject
 import org.eclipse.xtext.ide.server.LanguageServerImpl
-import org.eclipse.xtext.ide.server.ServerModule
+import java.io.File
 
 class RunEmbeddedServer {
 	
@@ -32,28 +35,20 @@ class RunEmbeddedServer {
 
 	def void start(InputStream in, OutputStream out) {
 		System.err.println("Starting Xtext Language Server.")
-
-		val messageAcceptor = if (IS_DEBUG) {
-				new LoggingJsonAdapter(languageServer) => [
-					errorLog = new PrintWriter(System.err)
-					messageLog = new PrintWriter(System.out)
-				]
-			} else {
-				new LanguageServerToJsonAdapter(languageServer) => [
-					protocol.addErrorListener [ p1, p2 |
-						p2.printStackTrace(System.err)
-					]
-				]
-			}
-		messageAcceptor.connect(in, out)
+		val messageAcceptor2 = new LanguageServerEndpoint(languageServer, Executors.newCachedThreadPool)
+		val MessageJsonHandler handler = new MessageJsonHandler()
+		val reader = new ConcurrentMessageReader(new StreamMessageReader(in, handler), Executors.newCachedThreadPool)
+		val writer = new StreamMessageWriter(out, handler)
+		messageAcceptor2.connect(reader, writer)
 		System.err.println("started.")
-		messageAcceptor.join
+		reader.join
 		while (true) {
 			Thread.sleep(10_000l)
 		}
 	}
 
 	def static redirectStandardStreams() {
+		System.err.println(new File(".").absoluteFile.toPath)
 		System.setIn(new ByteArrayInputStream(newByteArrayOfSize(0)))
 		val id = RunEmbeddedServer.name + "-" + new Timestamp(System.currentTimeMillis)
 		if (IS_DEBUG) {

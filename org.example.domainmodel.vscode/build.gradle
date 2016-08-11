@@ -28,7 +28,7 @@ node {
 }
 
 task ioShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar, dependsOn: assemble) {
-	manifest.attributes 'Main-Class': 'org.eclipse.xtext.ide.server.ServerLauncher'
+	manifest.attributes 'Main-Class': 'org.example.domainmodel.ide.RunEmbeddedServer'
 	from(project.convention.getPlugin(JavaPluginConvention).sourceSets.main.output)
 	configurations = [project.configurations.runtime]
 	exclude('META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')

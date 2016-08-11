@@ -23,13 +23,8 @@ function activate(context) {
         });
         return Promise.resolve(child);
     };
-
-
-
-
-
     var clientOptions = {
-        documentSelector: ['dmodel']
+        documentSelector: ['dmodel','java']
     };
     // Create the language client and start the client.
     var disposable = new vscode_lc.LanguageClient('Xtext Server', serverInfo, clientOptions).start();

@@ -1,12 +1,17 @@
 package org.example.domainmodel.ide;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.chainsaw.Main;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.ide.server.ProjectManager;
 import org.eclipse.xtext.resource.XtextResourceSet;
@@ -18,6 +23,13 @@ import org.eclipse.xtext.validation.Issue;
 import org.eclipse.xtext.workspace.IProjectConfig;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 
+import com.google.common.base.Charsets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import com.google.inject.Provider;
 
 public class XbaseProjectManager extends ProjectManager {
@@ -32,18 +44,26 @@ public class XbaseProjectManager extends ProjectManager {
 		super.initialize(description, projectConfig, acceptor, openedDocumentsContentProvider, indexProvider, cancelIndicator);
 		List<URL> urls = new ArrayList<>();
 		
-		try {
-			urls.add(new URL("file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/org.eclipse.xtext/org.eclipse.xtext.xbase.lib/2.11.0-SNAPSHOT/1cf846eca597abc8581e9a9443212f9f5d135589/org.eclipse.xtext.xbase.lib-2.11.0-SNAPSHOT.jar"));
-			urls.add(new URL("file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/org.eclipse.xtend/org.eclipse.xtend.lib.macro/2.11.0-SNAPSHOT/81277af86cc72635a16f0017f3e3ed65194dc4c3/org.eclipse.xtend.lib.macro-2.11.0-SNAPSHOT.jar"));
-			urls.add(new URL("file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/18.0/cce0823396aa693798f8882e64213b1772032b09/guava-18.0.jar"));
-			urls.add(new URL("file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/com.google.inject/guice/3.0/9d84f15fe35e2c716a02979fb62f50a29f38aefa/guice-3.0.jar"));
-			urls.add(new URL("file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar"));
-		} catch (MalformedURLException e) {
-			//TODO
+		URI rootPath = projectConfig.getPath();
+		URI classpathURI = rootPath.appendSegment("classpath.json");
+		
+		try (FileInputStream in = new FileInputStream(classpathURI.toFileString())) {
+			JsonElement parse = new JsonParser().parse(new JsonReader(new InputStreamReader(in, Charsets.UTF_8)));
+			Iterator<JsonElement> iterator = parse.getAsJsonObject().getAsJsonArray("entries").iterator();
+			while (iterator.hasNext()) {
+				JsonElement next = iterator.next();
+				if (!(next instanceof JsonNull)) {
+					urls.add(new URL(next.getAsString()));
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
-		
 		classpathURIContext = new URLClassLoader(urls.toArray(new URL[urls.size()]), null);
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 	
 	@Override

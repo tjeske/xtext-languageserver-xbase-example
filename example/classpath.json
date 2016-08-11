@@ -1,0 +1,9 @@
+{
+	entries : [
+		"file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/org.eclipse.xtext/org.eclipse.xtext.xbase.lib/2.11.0-SNAPSHOT/1cf846eca597abc8581e9a9443212f9f5d135589/org.eclipse.xtext.xbase.lib-2.11.0-SNAPSHOT.jar",
+		"file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/org.eclipse.xtend/org.eclipse.xtend.lib.macro/2.11.0-SNAPSHOT/81277af86cc72635a16f0017f3e3ed65194dc4c3/org.eclipse.xtend.lib.macro-2.11.0-SNAPSHOT.jar",
+		"file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/18.0/cce0823396aa693798f8882e64213b1772032b09/guava-18.0.jar",
+		"file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/com.google.inject/guice/3.0/9d84f15fe35e2c716a02979fb62f50a29f38aefa/guice-3.0.jar",
+		"file:///Users/dietrich/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar",
+	]
+}

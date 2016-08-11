@@ -6,9 +6,12 @@ package demo {
 
         op fullname(int x) : String {
             println("here we go")
+            var com.google.inject.Injector i = null
             firstname + " " + lastname
-
         }
+
+        
+
     }
 }
 

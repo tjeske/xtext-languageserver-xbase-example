@@ -1,0 +1,13 @@
+bin
+build
+node_modules
+bin
+src-gen
+xtend-gen
+model
+*.jar
+.project
+.classpath
+.settings
+.vscode
+.gradle

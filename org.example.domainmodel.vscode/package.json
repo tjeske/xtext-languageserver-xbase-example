@@ -1,0 +1,48 @@
+{
+    "name": "xtext-domainmodel-vscode-example",
+    "displayName": "Xtext Domainmodel (Xbase) VS Code example",
+    "description": "A simple Xbase DSL example for VS Code",
+    "version": "0.0.1",
+    "publisher": "itemis",
+    "icon": "images/itemis.png",
+    "license": "EPL-1.0",
+    "repository" : {
+        "type" : "git",
+        "url" : "https://github.com/itemis/xtext-languageserver-example.git"
+    },
+    "bugs": {
+        "url": "https://github.com/itemis/xtext-languageserver-example/issues"
+    },
+    "engines": {
+        "vscode": "^0.11.15"
+    },
+    "categories": [
+        "Languages"
+    ],
+	"activationEvents": [
+		"onLanguage:dmodel"
+	],
+	"main": "src/extension",
+    "contributes": {
+        "languages": [{
+            "id": "dmodel",
+            "aliases": ["dmodel"],
+            "extensions": [".dmodel"],
+            "configuration": "./dmodel.configuration.json"
+        }],
+        "grammars": [{
+            "language": "dmodel",
+            "scopeName": "text.dmodel",
+            "path": "./syntaxes/dmodel.tmLanguage"
+        }]
+    },
+	"devDependencies": {
+		"typescript": "^1.8.10",
+		"vscode": "^0.11.15"
+	},
+    "dependencies": {
+        "vscode-languageclient": "^2.3.0",
+        "vscode-jsonrpc": "^2.2.0",
+        "vscode-languageserver-types": "^1.0.1"
+    }
+}

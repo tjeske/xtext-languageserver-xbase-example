@@ -1,0 +1,9 @@
+package demo {
+
+    entity Other extends AbstractEntity {
+
+    }
+
+}
+
+

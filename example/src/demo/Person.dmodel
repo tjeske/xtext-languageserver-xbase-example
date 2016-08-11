@@ -1,0 +1,15 @@
+package demo {
+
+    entity Person {
+        firstname : String
+        lastname : String
+
+        op fullname(int x) : String {
+            println("here we go")
+            firstname + " " + lastname
+
+        }
+    }
+}
+
+

@@ -2,14 +2,10 @@ buildscript {
 	repositories {
 		jcenter()
 	}
-	dependencies {
-		classpath 'com.moowork.gradle:gradle-node-plugin:0.13'
-	}
 }
 
 plugins {
 	id 'com.github.johnrengelman.shadow' version '1.2.3'
-	id 'com.moowork.node' version '0.13'
 	id 'net.researchgate.release' version '2.4.0'
 }
 
@@ -19,13 +15,6 @@ dependencies {
 	compile project(':org.example.domainmodel.ide')
 }
 
-node {
-    version = '6.3.1'
-    npmVersion = '3.10.5'
-    download = true
-    workDir = file("${project.buildDir}/nodejs")
-    nodeModulesDir = file("${project.projectDir}")
-}
 
 task ioShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar, dependsOn: assemble) {
 	manifest.attributes 'Main-Class': 'org.example.domainmodel.ide.RunEmbeddedServer'
@@ -46,47 +35,27 @@ task shadowJars {
 
 clean.doFirst {
     delete tasks.ioShadowJar.archivePath
+    delete file("${project.projectDir}/node_modules")
 }
 
-npmInstall.dependsOn 'shadowJars'
 
-def vsce = file("$node.nodeModulesDir.path/node_modules/vsce/out/vsce")
+def vsce = file("${project.projectDir}/node_modules/vsce/out/vsce")
 
-task npmInstallNpm(type: NpmTask, dependsOn: npmSetup) {
-    group 'Node'
-    description 'Installs NPM"'
-    args = [ 'install', '-g', 'npm' ]
+task npmInstall(type: Exec, dependsOn : shadowJars) {
+    commandLine 'npm','install'
 }
 
-task vscodeExtension(type: NodeTask, dependsOn: [nodeSetup,npmInstall,npmInstallNpm,shadowJars]) {
+task vscodeExtension(type: Exec, dependsOn: [npmInstall,shadowJars]) {
     ext.destDir = new File(buildDir, 'vscode')
     ext.archiveName = "domainmodel-${project.version}.vsix"
     ext.destPath = "$destDir/$archiveName"
     print projectDir
-    script = vsce
+    commandLine = vsce
     args = ['package', '--out', destPath]
-    execOverrides {
-     //it.workingDir 
-
-    }
-   
-   // nodeModulesDir = projectDir
-	//version = '6.3.1'
-	//npmVersion = '3.10.5'
+  
     doFirst {
         destDir.mkdirs()
-        //commandLine nodeSetup.variant.nodeExec, vsce, 'package', '--out', destPath
-		//commandLine 'cmd.exe','/k','xxx.bat'
     }
-}
-
-plugins.withType(com.moowork.gradle.node.NodePlugin) {
-	node {
-		workDir = file("$project.buildDir/nodejs")
-		nodeModulesDir = projectDir
-		version = '6.3.1'
-    	npmVersion = '3.10.5'
-	}
 }
 
 

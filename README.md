@@ -4,6 +4,8 @@ This is a simple Example that shows a integration of a Xbase based Xtext Languag
 
 [![Build Status](https://travis-ci.org/cdietrich/xtext-languageserver-xbase-example.svg?branch=master)](https://travis-ci.org/cdietrich/xtext-languageserver-xbase-example)
 
+Requires Java 8 and Nodejs.
+
 ```
 ./gradlew build startCode
 ```

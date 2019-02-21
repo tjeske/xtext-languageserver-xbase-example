@@ -6,6 +6,7 @@ package org.example.domainmodel.ide
 import com.google.inject.Guice
 import org.example.domainmodel.DomainmodelRuntimeModule
 import org.example.domainmodel.DomainmodelStandaloneSetup
+import org.eclipse.xtext.util.Modules2
 
 /**
  * Initialization support for running Xtext languages without Equinox extension registry.
@@ -13,6 +14,6 @@ import org.example.domainmodel.DomainmodelStandaloneSetup
 class DomainmodelIdeSetup extends DomainmodelStandaloneSetup {
 
 	override createInjector() {
-		Guice.createInjector(new DomainmodelRuntimeModule, new DomainmodelIdeModule)
+		Guice.createInjector(Modules2.mixin(new DomainmodelRuntimeModule, new DomainmodelIdeModule))
 	}
 }

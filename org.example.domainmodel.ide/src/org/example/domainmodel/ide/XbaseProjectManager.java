@@ -70,17 +70,17 @@ public class XbaseProjectManager extends ProjectManager {
 		return resourceSet;
 	}
 	
-	@Override
-	public Result doBuild(List<URI> dirtyFiles, List<URI> deletedFiles, List<IResourceDescription.Delta> externalDeltas, CancelIndicator cancelIndicator) {
-
-		// workaround for https://github.com/eclipse/xtext-core/issues/73
-		for (URI f : Lists.newArrayList(dirtyFiles)) {
-			if (!new File(f.toFileString()).exists()) {
-				dirtyFiles.remove(f);
-				deletedFiles.add(f);
-			}
-		}
-		return super.doBuild(dirtyFiles, deletedFiles, externalDeltas, cancelIndicator);
-	}
+//	@Override
+//	public Result doBuild(List<URI> dirtyFiles, List<URI> deletedFiles, List<IResourceDescription.Delta> externalDeltas, CancelIndicator cancelIndicator) {
+//
+//		// workaround for https://github.com/eclipse/xtext-core/issues/73
+//		for (URI f : Lists.newArrayList(dirtyFiles)) {
+//			if (!new File(f.toFileString()).exists()) {
+//				dirtyFiles.remove(f);
+//				deletedFiles.add(f);
+//			}
+//		}
+//		return super.doBuild(dirtyFiles, deletedFiles, externalDeltas, cancelIndicator);
+//	}
 
 }

@@ -15,6 +15,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.build.IncrementalBuilder.Result;
 import org.eclipse.xtext.ide.server.ProjectManager;
 import org.eclipse.xtext.resource.IExternalContentSupport.IExternalContentProvider;
+import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.resource.impl.ProjectDescription;
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsData;
@@ -70,7 +71,8 @@ public class XbaseProjectManager extends ProjectManager {
 	}
 	
 	@Override
-	public Result doBuild(List<URI> dirtyFiles, List<URI> deletedFiles, CancelIndicator cancelIndicator) {
+	public Result doBuild(List<URI> dirtyFiles, List<URI> deletedFiles, List<IResourceDescription.Delta> externalDeltas, CancelIndicator cancelIndicator) {
+
 		// workaround for https://github.com/eclipse/xtext-core/issues/73
 		for (URI f : Lists.newArrayList(dirtyFiles)) {
 			if (!new File(f.toFileString()).exists()) {
@@ -78,7 +80,7 @@ public class XbaseProjectManager extends ProjectManager {
 				deletedFiles.add(f);
 			}
 		}
-		return super.doBuild(dirtyFiles, deletedFiles, cancelIndicator);
+		return super.doBuild(dirtyFiles, deletedFiles, externalDeltas, cancelIndicator);
 	}
 
 }
